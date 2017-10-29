@@ -1,0 +1,21 @@
+<div id="searchComponent" class="col-xs-12" data-ng-cloak="$ctrl.searchReady">
+    <div class="col-xs-12" data-ng-show="!$ctrl.searchReady">
+        Loading Search Page...
+    </div>
+    <div class="col-xs-12" data-ng-show="$ctrl.searchReady">
+        <div class="col-xs-2"></div>
+        <div class="col-xs-10">
+            <md-input-container>
+                <input type="text" name="searchBox" id="searchBox" aria-label="searchBox" data-ng-model="$ctrl.searchCriteria.freeText" data-ng-keypress="$ctrl.searchOnEnter"
+                />
+            </md-input-container>
+            <md-button class="md-primary md-raised" id="searchButton" data-ng-click="$ctrl.search($ctrl.searchCriteria.freeText)">Search</md-button>
+            <div class="col-xs-12" id="searchResults">
+                <tr data-ng-repeat="x in $ctrl.searchResults">
+                    <td>{{x}}</td>
+                </tr>
+            </div>
+        </div>
+        <div class="col-xs-2"></div>
+    </div>
+</div>
