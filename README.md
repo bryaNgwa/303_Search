@@ -1,3 +1,6 @@
 # 303_Search
 
-Run npm install, then npm install --only=dev, then npm start
+To begin testing,
+    - Run 'npm install'
+    - Run 'npm install --only=dev',
+    - Run 'npm start'
