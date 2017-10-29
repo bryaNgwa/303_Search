@@ -8,7 +8,7 @@
 
         },
         templateUrl: './Components/component.search.html',
-        controller: (['$q', '$http', '$state', 'elasticVariables', 'elasticClient', function ($q, $http, $state, $elasticVariables, $elasticClient) {
+        controller: (['$q', '$http', '$state', 'elasticVariables', 'elasticClient', '$http', function ($q, $http, $state, $elasticVariables, $elasticClient, $http) {
 
             /** Setting component variables */
             var vm = this;
@@ -21,17 +21,16 @@
             /** Function to run the elastic search*/
             function elasticSearch(_searchParameters) {
 
-                $elasticClient.search({
-                    index: $elasticVariables.euiIndex,
-                    q: _searchParameters,
-                    type: 'default'
-                }).then(function (body) {
-                    console.log(body);
-                    var hits = body.hits.hits;
-                    vm.searchResults = hits;
+                var _searchUrl = $elasticVariables.euiHost + "/" + $elasticVariables.euiIndex + "/_search?q=" + _searchParameters;
+
+                $http({
+                    method: 'GET',
+                    url: _searchUrl
+                }).then(function (results) {
+                    console.log(results);
                 }, function (error) {
                     logError(error);
-                })
+                });
             }
 
             function loadData() {
