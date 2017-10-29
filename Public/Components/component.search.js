@@ -7,7 +7,7 @@
         bindings: {
 
         },
-        templateUrl: './Components/component.search.html',
+        templateUrl: './Public/Components/component.search.html',
         controller: (['$q', '$http', '$state', 'elasticVariables', 'elasticClient', function ($q, $http, $state, $elasticVariables, $elasticClient) {
 
             /** Setting component variables */
