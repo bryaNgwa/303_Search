@@ -11,7 +11,7 @@
             </md-input-container>
             <md-button class="md-primary md-raised" id="searchButton" data-ng-click="$ctrl.search($ctrl.searchCriteria.freeText)">Search</md-button>
             <div class="col-xs-12" id="searchResults">
-                <tr data-ng-repeat="x in $ctrl.searchResults">
+                <tr data-ng-repeat="x in $ctrl.searchHits">
                     <td>{{x}}</td>
                 </tr>
             </div>

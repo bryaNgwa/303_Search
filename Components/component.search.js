@@ -18,19 +18,29 @@
 
             vm.search = elasticSearch;
 
+            // console.log($elasticClient);
+            // $elasticClient.search({
+            //     index:$elasticVariables.euiIndex,
+            //     q:'bryan',
+            //     size: 50,
+            // }).then(function(resp){
+            //     var hits = resp.body.hits;
+            //     console.log(hits);
+            // });
+
             /** Function to run the elastic search*/
             function elasticSearch(_searchParameters) {
 
                 var _searchUrl = $elasticVariables.euiHost + "/" + $elasticVariables.euiIndex + "/_search?q=" + _searchParameters;
-
-                $http({
-                    method: 'GET',
-                    url: _searchUrl
-                }).then(function (results) {
-                    console.log(results);
-                }, function (error) {
-                    logError(error);
-                });
+                $elasticClient.search({
+                    index:$elasticVariables.euiIndex,
+                    q:'bryan'
+                }).then(function(response){
+                    var hits = resp.body.hits;
+                    $scope.searchHits = hits;
+                },function(error){
+                    console.log(error);
+                })
             }
 
             function loadData() {
