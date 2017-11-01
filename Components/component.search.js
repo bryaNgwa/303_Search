@@ -34,7 +34,7 @@
                 var _searchUrl = $elasticVariables.euiHost + "/" + $elasticVariables.euiIndex + "/_search?q=" + _searchParameters;
                 $elasticClient.search({
                     index:$elasticVariables.euiIndex,
-                    q:'bryan'
+                    q: _searchParameters
                 }).then(function(response){
                     var hits = resp.body.hits;
                     $scope.searchHits = hits;
