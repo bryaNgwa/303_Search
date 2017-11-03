@@ -8,39 +8,96 @@
 
         },
         templateUrl: './Components/component.search.html',
-        controller: (['$q', '$http', '$state', 'elasticVariables', 'elasticClient', '$http', function ($q, $http, $state, $elasticVariables, $elasticClient, $http) {
+        controller: (['$q', '$http', '$state', 'elasticVariables', 'elasticClient', '$http', '$timeout', function ($q, $http, $state, $elasticVariables, $elasticClient, $http, $timeout) {
 
             /** Setting component variables */
             var vm = this;
 
+            vm.autocompleteItems = [];
+            vm.searchCriteria = {
+                freeText:'',
+                autoCompleteSearchText:''
+            }
             vm.searchReady = false;
             vm.elasticVariables = $elasticVariables;
 
             vm.search = elasticSearch;
+            vm.autoCompleteQuery = autoComplete;
 
-            // console.log($elasticClient);
-            // $elasticClient.search({
-            //     index:$elasticVariables.euiIndex,
-            //     q:'bryan',
-            //     size: 50,
-            // }).then(function(resp){
-            //     var hits = resp.body.hits;
-            //     console.log(hits);
-            // });
+
+            function autoComplete(_searchString) {
+
+                _searchString = encodeURIComponent(_searchString.toLowerCase());
+
+                $elasticClient.search({
+                    index: $elasticVariables.euiIndex,
+                    q: "name:"+_searchString+"*",
+                    size:10
+                }).then(function (response) {
+                    vm.autocompleteItems = response.hits.hits.map(function(_hit){
+                        return _hit._source.name;
+                    })
+                    // console.log(vm.autocompleteItems);
+                }, function (error) {
+                    console.log('Autocomplete Error: ', error);
+                })
+            }
+
+            /** Create filter function for a query string */
+            function createFilterFor(query) {
+                var lowercaseQuery = angular.lowercase(query);
+
+                return function filterFn(state) {
+                    return (state.value.indexOf(lowercaseQuery) === 0);
+                };
+            }
 
             /** Function to run the elastic search*/
-            function elasticSearch(_searchParameters) {
+            function elasticSearch() {
 
-                var _searchUrl = $elasticVariables.euiHost + "/" + $elasticVariables.euiIndex + "/_search?q=" + _searchParameters;
-                $elasticClient.search({
-                    index:$elasticVariables.euiIndex,
-                    q: _searchParameters
-                }).then(function(response){
-                    var hits = resp.body.hits;
-                    $scope.searchHits = hits;
-                },function(error){
-                    console.log(error);
-                })
+                /** Use the free text string if an autocomplete suggestion was not selected */
+                var _searchParameters = vm.searchCriteria.freeText !== vm.searchCriteria.autoCompleteSearchText ? vm.searchCriteria.autoCompleteSearchText : vm.searchCriteria.freeText;
+
+                _searchParameters = encodeURIComponent(_searchParameters);
+
+                if(vm.searchCriteria.freeText !== vm.searchCriteria.autoCompleteSearchText){
+                    $elasticClient.search({
+                        index: $elasticVariables.euiIndex,
+                        q: _searchParameters
+                    }).then(function (response) {
+                        var hits = response.hits.hits;
+                        var results = JSON.parse(JSON.stringify(hits));
+    
+                        vm.searchHits = results.map(function (_hit) {
+                            return _hit._source;
+                        });
+    
+                    }, function (error) {
+                        console.log(error);
+                    })
+                }
+                
+                else{
+                    $elasticClient.search({
+                        index: $elasticVariables.euiIndex,
+                        body:{
+                            'query':{
+                                match:{name:_searchParameters}
+                            },
+                        },
+                    }).then(function (response) {
+                        var hits = response.hits.hits;
+                        var results = JSON.parse(JSON.stringify(hits));
+    
+                        vm.searchHits = results.map(function (_hit) {
+                            return _hit._source;
+                        });
+    
+                    }, function (error) {
+                        console.log(error);
+                    })
+                    
+                }
             }
 
             function loadData() {
