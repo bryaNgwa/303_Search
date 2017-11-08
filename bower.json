@@ -1,0 +1,15 @@
+{
+    "name": "303_Elastic_Search",
+    "version": "2.0.0",
+    "dependencies": {
+        "bootstrap": "latest",
+        "angular": "~1.5.11",
+        "angular-animate": "~1.5.11",
+        "angular-aria":"~1.5.11",
+        "angular-messages": "~1.5.11",
+        "angular-sanitize": "~1.5.11",
+        "angular-ui-router": "latest",
+        "angular-material":"~1.1.5",
+        "elasticsearch": "~13.3.1"
+    }
+}

@@ -1,28 +1,25 @@
+// server.js
+
 var express = require('express');
-var router = express.Router();
-var path = require('path');
+var app = express();
+var bodyParser = require('body-parser');
+var methodOverride = require('method-override');
 
-const elasticsearch = require('elasticsearch');
+// configuration
 
-const esClient = new elasticsearch.Client({
-    host: 'http://35.189.79.182:9200',
-    log:'error'
-});
+var port = process.env.PORT || 8080;
 
-esClient.ping({
-    requestTimeout: 30000,
-  }, function (error) {
-    if (error) {
-      console.error('elasticsearch cluster is down!');
-    } else {
-      console.log('All is well');
-    }
-  });
+app.use(bodyParser.json());
+app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(methodOverride('X-HTTP-Method-Override'));
 
-/** Get home page */
-router.get('/', function (req, res, next) {
-    // res.render('index', { title: 'Express' });
-    res.sendFile(path.join(__dirname, '../', 'views', 'indext.html'));
-});
+app.use(express.static(__dirname + '/Public'));
 
-module.exports = router;
+require('./app/routes')(app) // configure routes
+
+app.listen(port);
+
+console.log('App being served on port ' + port);
+
+exports = module.exports = app;

@@ -2,5 +2,5 @@
 
 To begin testing,
     - Run 'npm install'
-    - Run 'npm install --only=dev',
-    - Run 'npm start'
+    - Run 'bower install'
+    - Run node server.js
